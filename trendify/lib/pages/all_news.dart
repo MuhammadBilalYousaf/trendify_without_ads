@@ -19,7 +19,22 @@ class _AllNewsState extends State<AllNews> {
   List<ArticleModel> articles = [];
   bool _loading = true;
 
-  List<String> countryList = ['us', 'in', 'uk', 'au', 'ca'];
+  List<String> countryList = [
+    'us',
+    'gr',
+    'in',
+    'nl',
+    'za',
+    'au',
+    'hk',
+    'nz',
+    'kr',
+    'at',
+    'hu',
+    'ng',
+    'se',
+    'uk'
+  ];
   List<String> categoryList = [
     'business',
     'entertainment',
@@ -34,15 +49,15 @@ class _AllNewsState extends State<AllNews> {
 
   @override
   void initState() {
-    fetchData(); // Call a method to fetch both slider and news data
+    fetchData();
     super.initState();
   }
 
   fetchData() async {
     if (widget.news == "Breaking") {
-      await getSlider(); // Wait for getSlider() to complete
+      await getSlider();
     } else {
-      await getNews(); // Wait for getNews() to complete
+      await getNews();
     }
     setState(() {
       _loading = false;
@@ -73,6 +88,7 @@ class _AllNewsState extends State<AllNews> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           widget.news + " News",
           style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
@@ -80,75 +96,88 @@ class _AllNewsState extends State<AllNews> {
         centerTitle: true,
         elevation: 0.0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Show dropdowns only if widget.news is "Breaking"
-            Visibility(
-              visible: widget.news == "Breaking",
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  DropdownButton<String>(
-                    value: selectedCountry,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedCountry = newValue!;
-                        fetchData(); // Fetch new data based on selection
-                      });
-                    },
-                    items: countryList
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value.toUpperCase()),
-                      );
-                    }).toList(),
-                  ),
-                  DropdownButton<String>(
-                    value: selectedCategory,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedCategory = newValue!;
-                        fetchData(); // Fetch new data based on selection
-                      });
-                    },
-                    items: categoryList
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value.toLowerCase()),
-                      );
-                    }).toList(),
-                  ),
-                ],
+      body: Container(
+        color: Colors.black,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Visibility(
+                visible: widget.news == "Breaking",
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    DropdownButton<String>(
+                      dropdownColor: Colors.black,
+                      value: selectedCountry,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedCountry = newValue!;
+                          fetchData();
+                        });
+                      },
+                      items: countryList
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value.toUpperCase(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    DropdownButton<String>(
+                      dropdownColor: Colors.black,
+                      value: selectedCategory,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedCategory = newValue!;
+                          fetchData();
+                        });
+                      },
+                      items: categoryList
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value.toLowerCase(),
+                              style: TextStyle(color: Colors.white)),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
-                itemCount:
-                    widget.news == "Breaking" ? sliders.length : articles.length,
-                itemBuilder: (context, index) {
-                  return AllNewsSection(
-                    url: widget.news == "Breaking"
-                        ? sliders[index].url!
-                        : articles[index].url!,
-                    desc: widget.news == "Breaking"
-                        ? sliders[index].description!
-                        : articles[index].description!,
-                    Image: widget.news == "Breaking"
-                        ? sliders[index].urlToImage!
-                        : articles[index].urlToImage!,
-                    title: widget.news == "Breaking"
-                        ? sliders[index].title!
-                        : articles[index].title!,
-                  );
-                },
+              SizedBox(
+                height: 10,
               ),
-            ),
-          ],
+              Container(
+                color: Colors.black,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
+                  itemCount: widget.news == "Breaking"
+                      ? sliders.length
+                      : articles.length,
+                  itemBuilder: (context, index) {
+                    return AllNewsSection(
+                      url: widget.news == "Breaking"
+                          ? sliders[index].url!
+                          : articles[index].url!,
+                      desc: widget.news == "Breaking"
+                          ? sliders[index].description!
+                          : articles[index].description!,
+                      Image: widget.news == "Breaking"
+                          ? sliders[index].urlToImage!
+                          : articles[index].urlToImage!,
+                      title: widget.news == "Breaking"
+                          ? sliders[index].title!
+                          : articles[index].title!,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -174,8 +203,10 @@ class AllNewsSection extends StatelessWidget {
             ));
       },
       child: Container(
+        color: Colors.black45,
         margin: EdgeInsets.only(bottom: 10.0),
         child: Material(
+          color: Colors.black45,
           elevation: 3.0,
           borderRadius: BorderRadius.all(Radius.circular(10)),
           child: Container(
@@ -196,7 +227,7 @@ class AllNewsSection extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold),
                   maxLines: 2,
@@ -207,6 +238,9 @@ class AllNewsSection extends StatelessWidget {
                 Text(
                   desc,
                   maxLines: 3,
+                  style: TextStyle(
+                    color: Colors.white70,
+                  ),
                 ),
                 SizedBox(
                   height: 30.0,

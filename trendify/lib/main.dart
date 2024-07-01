@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trendify/pages/contact_page.dart';
+import 'package:trendify/pages/home.dart';
 import 'package:trendify/pages/splash_screen.dart';
 
 void main() {

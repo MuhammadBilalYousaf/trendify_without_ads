@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:trendify/models/category_model.dart';
 import 'package:trendify/pages/category_news.dart';
-import 'package:trendify/pages/bottom_tab_bar.dart';
-import 'package:trendify/pages/home.dart'; // Import BottomTabBar
+import 'package:trendify/pages/contact_page.dart';
+import 'package:trendify/pages/home.dart';
 
-// Categories Page
 class CategoriesPage extends StatefulWidget {
   final List<CategoryModel> categories;
-  final bool isDarkMode; // Add this line
 
-  CategoriesPage({required this.categories, required this.isDarkMode}); // Update the constructor
+  CategoriesPage({required this.categories});
 
   @override
   _CategoriesPageState createState() => _CategoriesPageState();
 }
 
 class _CategoriesPageState extends State<CategoriesPage> {
-  int _currentIndex = 1; // Index for CategoriesPage in BottomTabBar
+  int _currentIndex = 1;
   int _selectedTabIndex = 0;
   late PageController _pageController;
 
@@ -36,10 +34,14 @@ class _CategoriesPageState extends State<CategoriesPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: widget.isDarkMode ? ThemeData.dark() : ThemeData.light(), // Apply dark mode
       home: Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
-          title: Text('Categories'),
+          backgroundColor: Colors.white,
+          title: Text(
+            'Categories',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           centerTitle: true,
           elevation: 0.0,
         ),
@@ -48,7 +50,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
           children: [
             Container(
               padding: EdgeInsets.symmetric(vertical: 10.0),
-              color: widget.isDarkMode ? Colors.black : Colors.white,
+              color: Colors.black,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -67,20 +69,25 @@ class _CategoriesPageState extends State<CategoriesPage> {
                       },
                       child: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 10.0),
                         margin: EdgeInsets.only(right: 10.0),
                         decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
                               width: 2.0,
-                              color: _selectedTabIndex == index ? Colors.blue : Colors.transparent,
+                              color: _selectedTabIndex == index
+                                  ? Colors.blue
+                                  : Colors.transparent,
                             ),
                           ),
                         ),
                         child: Text(
                           widget.categories[index].categoryName!,
                           style: TextStyle(
-                            color: _selectedTabIndex == index ? Colors.blue : widget.isDarkMode ? Colors.white : Colors.black,
+                            color: _selectedTabIndex == index
+                                ? Colors.blue
+                                : Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -99,7 +106,8 @@ class _CategoriesPageState extends State<CategoriesPage> {
                   });
                 },
                 children: widget.categories
-                    .map((category) => CategoryNews(name: category.categoryName!))
+                    .map((category) =>
+                        CategoryNews(name: category.categoryName!))
                     .toList(),
               ),
             ),
@@ -109,7 +117,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
           duration: Duration(milliseconds: 400),
           curve: Curves.easeInOut,
           decoration: BoxDecoration(
-            color: widget.isDarkMode ? Colors.black : Colors.white,
+            color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             boxShadow: [
               BoxShadow(
@@ -119,22 +127,29 @@ class _CategoriesPageState extends State<CategoriesPage> {
               ),
             ],
           ),
-          child: BottomTabBar(
+          child: BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) {
               setState(() {
                 _currentIndex = index;
               });
               if (index == 0) {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => Home(),
                   ),
                 );
+              } else if (index == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactPage(),
+                  ),
+                );
               }
             },
-            items: [
+            items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
                 label: 'Home',
@@ -143,8 +158,12 @@ class _CategoriesPageState extends State<CategoriesPage> {
                 icon: Icon(Icons.category),
                 label: 'Categories',
               ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.contact_page),
+                label: 'Contact',
+              ),
             ],
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white,
             selectedItemColor: Colors.blue,
             unselectedItemColor: Colors.grey,
             showSelectedLabels: true,

@@ -7,14 +7,14 @@ class Sliders {
   List<SliderModel> sliders = [];
 
   Future<void> getSlider(String selectedCountry, String selectedCategory) async {
-    String url = "https://newsapi.org/v2/top-headlines?country=$selectedCountry&category=$selectedCategory&apiKey=eaeca90b6c80420bbe53d9bc429cb761";
+    String url = "https://newsapi.org/v2/top-headlines?country=$selectedCountry&category=$selectedCategory&apiKey=6b2a40b1672a4c478e01f6df263e455f";
 
     var response = await http.get(Uri.parse(url));
 
     var jsonData = jsonDecode(response.body);
 
     if (jsonData['status'] == 'ok') {
-      sliders.clear(); // Clear previous sliders data
+      sliders.clear();
       jsonData["articles"].forEach((element) {
         if (element["urlToImage"] != null && element['description'] != null) {
           SliderModel sliderModel = SliderModel(

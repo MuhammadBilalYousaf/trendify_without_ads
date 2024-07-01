@@ -19,10 +19,25 @@ class CategoryNews extends StatefulWidget {
 class _CategoryNewsState extends State<CategoryNews> {
   List<ShowCategoryModel> categories = [];
   bool _loading = true;
-  String selectedCountry = 'us'; // Default country
+  String selectedCountry = 'us';
   bool isDarkMode = false;
 
-  List<String> countries = ['us', 'gr', 'in', 'nl', 'za', 'au', 'hk', 'nz', 'kr', 'at', 'hu', 'ng', 'se', 'uk']; // Example list of countries
+  List<String> countries = [
+    'us',
+    'gr',
+    'in',
+    'nl',
+    'za',
+    'au',
+    'hk',
+    'nz',
+    'kr',
+    'at',
+    'hu',
+    'ng',
+    'se',
+    'uk'
+  ];
 
   @override
   void initState() {
@@ -35,7 +50,8 @@ class _CategoryNewsState extends State<CategoryNews> {
       _loading = true;
     });
     ShowCategoryNews showCategoryNews = ShowCategoryNews();
-    await showCategoryNews.getCategoriesNews(selectedCountry, widget.name.toLowerCase());
+    await showCategoryNews.getCategoriesNews(
+        selectedCountry, widget.name.toLowerCase());
     categories = showCategoryNews.categories;
 
     setState(() {
@@ -46,7 +62,9 @@ class _CategoryNewsState extends State<CategoryNews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           widget.name,
           style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
@@ -97,9 +115,7 @@ class _CategoryNewsState extends State<CategoryNews> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => Home()
-                  ),
+                  MaterialPageRoute(builder: (context) => Home()),
                 );
               },
             ),
@@ -184,7 +200,6 @@ class _CategoryNewsState extends State<CategoryNews> {
                   title: categories[index].title!,
                   desc: categories[index].description!,
                   url: categories[index].url!,
-                  isDarkMode: isDarkMode,
                 );
               },
             ),
@@ -194,9 +209,12 @@ class _CategoryNewsState extends State<CategoryNews> {
 
 class ShowCategory extends StatelessWidget {
   String Image, title, desc, url;
-  final bool isDarkMode; // Add isDarkMode variable
 
-  ShowCategory({required this.Image, required this.title, required this.desc, required this.url, required this.isDarkMode});
+  ShowCategory(
+      {required this.Image,
+      required this.title,
+      required this.desc,
+      required this.url});
 
   @override
   Widget build(BuildContext context) {
@@ -210,8 +228,10 @@ class ShowCategory extends StatelessWidget {
         );
       },
       child: Container(
+        color: Colors.black54,
         margin: EdgeInsets.only(bottom: 10.0),
         child: Material(
+          color: Colors.black54,
           elevation: 3.0,
           borderRadius: BorderRadius.all(Radius.circular(10)),
           child: Container(
@@ -230,7 +250,7 @@ class ShowCategory extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    // color: isDarkMode ? Colors.white : Colors.black, // Adjust text color based on isDarkMode
+                    color: Colors.white,
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -240,6 +260,9 @@ class ShowCategory extends StatelessWidget {
                 Text(
                   desc,
                   maxLines: 3,
+                  style: TextStyle(
+                    color: Colors.white70,
+                  ),
                 ),
                 SizedBox(height: 30.0)
               ],

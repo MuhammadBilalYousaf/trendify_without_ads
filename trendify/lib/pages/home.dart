@@ -6,6 +6,7 @@ import 'package:trendify/pages/all_news.dart';
 import 'package:trendify/pages/article_view.dart';
 import 'package:trendify/pages/category_news.dart';
 import 'package:trendify/pages/category_page.dart';
+import 'package:trendify/pages/contact_page.dart';
 import 'package:trendify/services/data.dart';
 import 'package:trendify/services/News.dart';
 import 'package:trendify/models/category_model.dart';
@@ -14,9 +15,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:trendify/models/slider_model.dart';
 import 'package:trendify/services/slider_data.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'landing_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:trendify/pages/bottom_tab_bar.dart';
 
 void main() => runApp(const MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -35,31 +34,57 @@ class _HomeState extends State<Home> {
   List<SliderModel> sliders = [];
   List<ArticleModel> articles = [];
   bool _loading = true;
-  bool isDarkMode = false; // Track dark mode state
 
   int activeIndex = 0;
   int _currentIndex = 0;
 
+  final List<Widget> _screens = [
+    Home(),
+  ];
+
   // Lists for dropdown menus
-  List<String> countryList = ['us', 'in', 'uk', 'au', 'ca'];
-  List<String> categoryList = ['business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'];
+  List<String> countryList = [
+    'us',
+    'gr',
+    'in',
+    'nl',
+    'za',
+    'au',
+    'hk',
+    'nz',
+    'kr',
+    'at',
+    'hu',
+    'ng',
+    'se',
+    'uk'
+  ];
+  List<String> categoryList = [
+    'business',
+    'entertainment',
+    'general',
+    'health',
+    'science',
+    'sports',
+    'technology'
+  ];
   String selectedCountry = 'us';
   String selectedCategory = 'business';
 
   @override
   void initState() {
-  categories = getCategories();
-  fetchData(); // Call a method to fetch both slider and news data
-  super.initState();
-}
+    categories = getCategories();
+    fetchData();
+    super.initState();
+  }
 
-fetchData() async {
-  await getSlider(); // Wait for getSlider() to complete
-  await getNews();   // Wait for getNews() to complete
-  setState(() {
-    _loading = false;
-  });
-}
+  fetchData() async {
+    await getSlider();
+    await getNews();
+    setState(() {
+      _loading = false;
+    });
+  }
 
   getNews() async {
     News newsclass = News();
@@ -73,7 +98,7 @@ fetchData() async {
 
   getSlider() async {
     Sliders slider = Sliders();
-    await slider.getSlider(selectedCountry,selectedCategory);
+    await slider.getSlider(selectedCountry, selectedCategory);
     sliders = slider.sliders;
 
     setState(() {
@@ -85,13 +110,17 @@ fetchData() async {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: isDarkMode ? ThemeData.dark() : ThemeData.light(),
       home: Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
+          backgroundColor: Colors.white,
           title: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('TREND'),
+              Text(
+                'TREND',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               Text(
                 'ify',
                 style:
@@ -109,19 +138,17 @@ fetchData() async {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
                       child: Column(
                         children: [
                           Container(
-                              margin: const EdgeInsets.only(left: 10.0),
                               height: 70,
+                              color: Colors.black38,
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
                                 itemCount: categories.length,
                                 itemBuilder: (context, index) {
                                   return CategoryTile(
-                                    // image: categories[index].image!,
                                     categoryName:
                                         categories[index].categoryName!,
                                   );
@@ -133,43 +160,52 @@ fetchData() async {
                     const SizedBox(
                       height: 30.0,
                     ),
-                                               // Dropdowns for selecting country and category
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              DropdownButton<String>(
-                                value: selectedCountry,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedCountry = newValue!;
-                                    fetchData(); // Fetch new data based on selection
-                                  });
-                                },
-                                items: countryList.map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value.toUpperCase()),
-                                  );
-                                }).toList(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        DropdownButton<String>(
+                          dropdownColor: Colors.black,
+                          value: selectedCountry,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedCountry = newValue!;
+                              fetchData(); 
+                            });
+                          },
+                          items: countryList
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value.toUpperCase(),
+                                style: TextStyle(color: Colors.white),
                               ),
-                              DropdownButton<String>(
-                                value: selectedCategory,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedCategory = newValue!;
-                                    fetchData(); // Fetch new data based on selection
-                                  });
-                                },
-                                items: categoryList.map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value.toLowerCase()),
-                                  );
-                                }).toList(),
+                            );
+                          }).toList(),
+                        ),
+                        DropdownButton<String>(
+                          dropdownColor: Colors.black,
+                          value: selectedCategory,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedCategory = newValue!;
+                              fetchData(); 
+                            });
+                          },
+                          items: categoryList
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value.toLowerCase(),
+                                style: TextStyle(color: Colors.white),
                               ),
-                            ],
-                          ),
-                        const SizedBox(
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
                       height: 15.0,
                     ),
                     Padding(
@@ -180,7 +216,7 @@ fetchData() async {
                           Text(
                             "Breaking News",
                             style: TextStyle(
-                              color: isDarkMode ? Colors.white : Colors.black,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
                               fontFamily: 'SedgwickAveDisplay_Regular',
@@ -242,7 +278,8 @@ fetchData() async {
                           Text(
                             "Trending News",
                             style: TextStyle(
-                              color: isDarkMode ? Colors.white : Colors.black,
+                              
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
                             ),
@@ -280,8 +317,8 @@ fetchData() async {
                             url: articles[index].url!,
                             desc: articles[index].description!,
                             image: articles[index].urlToImage!,
-                            title: articles[index].title!,
-                            isDarkMode: isDarkMode, // Pass isDarkMode here
+                            title:
+                                articles[index].title!, 
                           );
                         },
                       ),
@@ -293,165 +330,64 @@ fetchData() async {
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
                       ),
-                      child: Material(
-                        elevation: 3.0,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 8.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.asset(
-                                    'images/sport.jpg',
-                                    width: 120,
-                                    height: 120,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 5.0),
-                              Column(
-                                children: [
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 1.8,
-                                    child: Text(
-                                      'Here is the title of the trending news coming from an API',
-                                      style: TextStyle(
-                                        color: isDarkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 3.0,
-                                  ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 1.8,
-                                    child: Text(
-                                      'Here is the description of the trending news, will also come from an API',
-                                      style: TextStyle(
-                                        color: isDarkMode
-                                            ? Colors.white70
-                                            : Colors.black54,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),
               ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text(
-                  'Settings',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
+        bottomNavigationBar: AnimatedContainer(
+          duration: Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+              if (index == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoriesPage(
+                      categories: categories,
+                    ),
                   ),
-                ),
+                );
+              }
+              else if (index == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactPage(),
+                  ),
+                );
+              }
+            },
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
               ),
-              ListTile(
-                title: const Text(
-                  'Dark Mode',
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-                trailing: Switch(
-                  value: isDarkMode,
-                  onChanged: (value) {
-                    setState(() {
-                      isDarkMode = value;
-                    });
-                  },
-                  activeColor: Colors.blue,
-                ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.category),
+                label: 'Categories',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.contact_page),
+                label: 'Contact',
               ),
             ],
+            backgroundColor: Colors.white,
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey,
+            showSelectedLabels: true,
+            showUnselectedLabels: true,
           ),
         ),
-         bottomNavigationBar: AnimatedContainer(
-                 duration: const Duration(milliseconds: 400),
-                 curve: Curves.easeInOut,
-                 decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.4),
-              blurRadius: 5,
-              spreadRadius: 1,
-            ),
-          ],
-                 ),
-                 child: BottomTabBar(
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index; // Update the current index
-            });
-            // Perform actions based on the tapped tab index
-            if (index == 0) {
-              // Navigate to Home page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Home()), // Replace `Home()` with the actual Home page widget
-              );
-            } else if (index == 1) {
-              // Navigate to Categories page
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CategoriesPage(
-                    categories: categories,
-                    isDarkMode: isDarkMode, // Pass the isDarkMode flag
-                  ),
-                ), // Replace `CategoriesPage()` with the actual Categories page widget
-              );
-            }
-            // Add more conditions for other tabs if needed
-          },
-          items: [
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.category),
-              label: 'Categories',
-            ),
-            // Add more bottom navigation items as needed
-          ],
-          backgroundColor: Colors.transparent, // Transparent background
-          selectedItemColor: Colors.blue, // Selected tab color
-          unselectedItemColor: Colors.grey, // Unselected tab color
-          showSelectedLabels: true, // Show labels for selected tab
-          showUnselectedLabels: true, // Show labels for unselected tabs
-                 ),
-               ),
-    ),
+      ),
     );
   }
 
@@ -523,22 +459,10 @@ class CategoryTile extends StatelessWidget {
                 builder: (context) => CategoryNews(name: categoryName)));
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
         padding: const EdgeInsets.all(10.0),
-        width: 180,
+        width: 150,
         height: 80,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(137, 237, 236, 236),
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            const BoxShadow(
-              color: Colors.black12,
-              blurRadius: 5.0,
-              spreadRadius: 2.0,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
         child: Center(
           child: Text(
             categoryName,
@@ -546,7 +470,7 @@ class CategoryTile extends StatelessWidget {
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
         ),
@@ -555,17 +479,29 @@ class CategoryTile extends StatelessWidget {
   }
 }
 
-class BlogTile extends StatelessWidget {
-  final String image, title, desc, url;
-  static int counter = 0;
-  final bool isDarkMode; // Added isDarkMode variable
+class BlogTile extends StatefulWidget {
+  final String title;
+  final String desc;
+  final String image;
+  final String url;
 
-  BlogTile(
-      {required this.image,
-      required this.title,
-      required this.desc,
-      required this.url,
-      required this.isDarkMode}) {
+  BlogTile({
+    required this.title,
+    required this.desc,
+    required this.image,
+    required this.url,
+  });
+
+  @override
+  _BlogTileState createState() => _BlogTileState();
+}
+
+class _BlogTileState extends State<BlogTile> {
+  static int counter = 0;
+
+  @override
+  void initState() {
+    super.initState();
     counter++;
   }
 
@@ -578,22 +514,24 @@ class BlogTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ArticleView(blogUrl: url),
+            builder: (context) => ArticleView(blogUrl: widget.url),
           ),
         );
       },
       child: Container(
+        color: Colors.black,
         margin: const EdgeInsets.only(bottom: 10.0),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Material(
+            color: Colors.black,
             elevation: 3.0,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Display image on the left for odd-indexed news items and on the right for even-indexed news items
                   if (isOdd)
                     Container(
                       width: 120,
@@ -601,7 +539,7 @@ class BlogTile extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: CachedNetworkImage(
-                          imageUrl: image,
+                          imageUrl: widget.image,
                           fit: BoxFit.cover,
                           width: 120,
                           height: 120,
@@ -612,18 +550,15 @@ class BlogTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                  const SizedBox(width: 10), // Add spacing between images and text
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title,
+                          widget.title,
                           style: TextStyle(
-                            color: isDarkMode
-                                ? Colors.white
-                                : Colors
-                                    .black, // Access isDarkMode from the constructor
+                            color: Colors.white,
                             fontSize: 17,
                             fontWeight: FontWeight.w500,
                           ),
@@ -632,12 +567,9 @@ class BlogTile extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          desc,
+                          widget.desc,
                           style: TextStyle(
-                            color: isDarkMode
-                                ? Colors.white70
-                                : Colors
-                                    .black54, // Access isDarkMode from the constructor
+                            color: Colors.white70,
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                           ),
@@ -647,8 +579,6 @@ class BlogTile extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 10), // Add spacing between images and text
-                  // Display image on the right for odd-indexed news items and on the left for even-indexed news items
                   if (!isOdd)
                     Container(
                       width: 120,
@@ -656,7 +586,7 @@ class BlogTile extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: CachedNetworkImage(
-                          imageUrl: image,
+                          imageUrl: widget.image,
                           fit: BoxFit.cover,
                           width: 120,
                           height: 120,
